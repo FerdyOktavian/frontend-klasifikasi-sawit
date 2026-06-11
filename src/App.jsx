@@ -371,13 +371,17 @@ function App() {
     }
   };
 
-  const exportAsImage = () => {
-    if (!result || !capturedImage) {
+  const exportAsImage = (
+    exportResult = result,
+    exportImage = capturedImage,
+    exportSource = mode,
+  ) => {
+    if (!exportResult || !exportImage) {
       alert("Belum ada hasil prediksi untuk diekspor.");
       return;
     }
 
-    const classInfo = getClassInfo(result.predicted_class);
+    const classInfo = getClassInfo(exportResult.predicted_class);
     const exportCanvas = document.createElement("canvas");
     const ctx = exportCanvas.getContext("2d");
 
@@ -430,7 +434,15 @@ function App() {
     ctx.font = "24px Arial";
     ctx.fillText("Model: EfficientNetV2S", 50, 112);
     ctx.fillText(`Tanggal: ${new Date().toLocaleString("id-ID")}`, 50, 150);
-    ctx.fillText(`Sumber: ${mode === "camera" ? "Kamera" : "Galeri"}`, 50, 188);
+    ctx.fillText(
+      `Sumber: ${
+        exportSource === "camera" || exportSource === "Kamera"
+          ? "Kamera"
+          : "Galeri"
+      }`,
+      50,
+      188,
+    );
 
     const img = new Image();
 
@@ -464,7 +476,7 @@ function App() {
       y += 55;
       ctx.fillStyle = "#2f7d32";
       ctx.font = "bold 32px Arial";
-      ctx.fillText(`Confidence: ${result.confidence}%`, cardX + 35, y);
+      ctx.fillText(`Confidence: ${exportResult.confidence}%`, cardX + 35, y);
 
       y += 48;
       ctx.fillStyle = "#3d3428";
@@ -482,16 +494,18 @@ function App() {
       ctx.fillText("Probabilitas:", cardX + 35, y);
 
       y += 40;
-      Object.entries(result.probabilities || {}).forEach(([label, value]) => {
-        ctx.fillStyle = "#3d3428";
-        ctx.font = "22px Arial";
-        ctx.fillText(
-          `${getClassInfo(label).title}: ${Number(value).toFixed(2)}%`,
-          cardX + 35,
-          y,
-        );
-        y += 36;
-      });
+      Object.entries(exportResult.probabilities || {}).forEach(
+        ([label, value]) => {
+          ctx.fillStyle = "#3d3428";
+          ctx.font = "22px Arial";
+          ctx.fillText(
+            `${getClassInfo(label).title}: ${Number(value).toFixed(2)}%`,
+            cardX + 35,
+            y,
+          );
+          y += 36;
+        },
+      );
 
       ctx.fillStyle = "#8a7a65";
       ctx.font = "18px Arial";
@@ -509,25 +523,29 @@ function App() {
       link.click();
     };
 
-    img.src = capturedImage;
+    img.src = exportImage;
   };
 
-  const exportAsPDF = () => {
-    if (!result || !capturedImage) {
+  const exportAsPDF = (
+    exportResult = result,
+    exportImage = capturedImage,
+    exportSource = mode,
+  ) => {
+    if (!exportResult || !exportImage) {
       alert("Belum ada hasil prediksi untuk diekspor.");
       return;
     }
 
-    const classInfo = getClassInfo(result.predicted_class);
+    const classInfo = getClassInfo(exportResult.predicted_class);
 
-    const probabilityRows = Object.entries(result.probabilities || {})
+    const probabilityRows = Object.entries(exportResult.probabilities || {})
       .map(
         ([label, value]) => `
-          <tr>
-            <td>${getClassInfo(label).title}</td>
-            <td>${Number(value).toFixed(2)}%</td>
-          </tr>
-        `,
+        <tr>
+          <td>${getClassInfo(label).title}</td>
+          <td>${Number(value).toFixed(2)}%</td>
+        </tr>
+      `,
       )
       .join("");
 
@@ -539,126 +557,130 @@ function App() {
     }
 
     printWindow.document.write(`
-      <html>
-        <head>
-          <title>Hasil Prediksi Sawit</title>
-          <style>
+    <html>
+      <head>
+        <title>Hasil Prediksi Sawit</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background: #fff7e8;
+            padding: 24px;
+            color: #24351f;
+          }
+          .card {
+            max-width: 720px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #ead8bd;
+          }
+          h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+          }
+          .meta {
+            color: #6f604c;
+            margin-bottom: 18px;
+          }
+          img {
+            width: 100%;
+            max-height: 420px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 18px;
+          }
+          .result {
+            background: #f4ead8;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+          }
+          .prediction {
+            font-size: 26px;
+            font-weight: bold;
+            margin: 0;
+          }
+          .confidence {
+            color: #2f7d32;
+            font-size: 22px;
+            font-weight: bold;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+          }
+          th, td {
+            border: 1px solid #ead8bd;
+            padding: 10px;
+            text-align: left;
+          }
+          th {
+            background: #f4ead8;
+          }
+          p {
+            line-height: 1.5;
+          }
+          @media print {
             body {
-              font-family: Arial, sans-serif;
-              background: #fff7e8;
-              padding: 24px;
-              color: #24351f;
-            }
-            .card {
-              max-width: 720px;
-              margin: auto;
               background: #ffffff;
-              border-radius: 20px;
-              padding: 24px;
-              border: 1px solid #ead8bd;
             }
-            h1 {
-              margin: 0 0 8px;
-              font-size: 28px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h1>Hasil Prediksi Sawit</h1>
+          <div class="meta">
+            Model: EfficientNetV2S<br/>
+            Tanggal: ${new Date().toLocaleString("id-ID")}<br/>
+            Sumber: ${
+              exportSource === "camera" || exportSource === "Kamera"
+                ? "Kamera"
+                : "Galeri"
             }
-            .meta {
-              color: #6f604c;
-              margin-bottom: 18px;
-            }
-            img {
-              width: 100%;
-              max-height: 420px;
-              object-fit: cover;
-              border-radius: 16px;
-              margin-bottom: 18px;
-            }
-            .result {
-              background: #f4ead8;
-              border-radius: 16px;
-              padding: 16px;
-              margin-bottom: 16px;
-            }
-            .prediction {
-              font-size: 26px;
-              font-weight: bold;
-              margin: 0;
-            }
-            .confidence {
-              color: #2f7d32;
-              font-size: 22px;
-              font-weight: bold;
-            }
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-top: 12px;
-            }
-            th, td {
-              border: 1px solid #ead8bd;
-              padding: 10px;
-              text-align: left;
-            }
-            th {
-              background: #f4ead8;
-            }
-            p {
-              line-height: 1.5;
-            }
-            @media print {
-              body {
-                background: #ffffff;
-              }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="card">
-            <h1>Hasil Prediksi Sawit</h1>
-            <div class="meta">
-              Model: EfficientNetV2S<br/>
-              Tanggal: ${new Date().toLocaleString("id-ID")}<br/>
-              Sumber: ${mode === "camera" ? "Kamera" : "Galeri"}
-            </div>
-
-            <img src="${capturedImage}" />
-
-            <div class="result">
-              <p class="prediction">${classInfo.icon} ${classInfo.title}</p>
-              <p>Status: <b>${classInfo.status}</b></p>
-              <p class="confidence">Confidence: ${result.confidence}%</p>
-            </div>
-
-            <h3>Rekomendasi</h3>
-            <p>${classInfo.description}</p>
-
-            <h3>Kenapa hasil ini muncul?</h3>
-            <p>${classInfo.reason}</p>
-
-            <h3>Saran tindakan</h3>
-            <p>${classInfo.action}</p>
-
-            <h3>Probabilitas</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Kelas</th>
-                  <th>Probabilitas</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${probabilityRows}
-              </tbody>
-            </table>
           </div>
 
-          <script>
-            window.onload = function() {
-              window.print();
-            };
-          </script>
-        </body>
-      </html>
-    `);
+          <img src="${exportImage}" />
+
+          <div class="result">
+            <p class="prediction">${classInfo.icon} ${classInfo.title}</p>
+            <p>Status: <b>${classInfo.status}</b></p>
+            <p class="confidence">Confidence: ${exportResult.confidence}%</p>
+          </div>
+
+          <h3>Rekomendasi</h3>
+          <p>${classInfo.description}</p>
+
+          <h3>Kenapa hasil ini muncul?</h3>
+          <p>${classInfo.reason}</p>
+
+          <h3>Saran tindakan</h3>
+          <p>${classInfo.action}</p>
+
+          <h3>Probabilitas</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Kelas</th>
+                <th>Probabilitas</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${probabilityRows}
+            </tbody>
+          </table>
+        </div>
+
+        <script>
+          window.onload = function() {
+            window.print();
+          };
+        </script>
+      </body>
+    </html>
+  `);
 
     printWindow.document.close();
   };
@@ -1102,22 +1124,26 @@ function App() {
                             <div className="export-grid">
                               <button
                                 className="secondary-btn"
-                                onClick={() => {
-                                  setCapturedImage(item.image);
-                                  setResult(item.result);
-                                  setTimeout(() => exportAsImage(), 100);
-                                }}
+                                onClick={() =>
+                                  exportAsImage(
+                                    item.result,
+                                    item.image,
+                                    item.source,
+                                  )
+                                }
                               >
                                 Simpan Gambar
                               </button>
 
                               <button
                                 className="secondary-btn"
-                                onClick={() => {
-                                  setCapturedImage(item.image);
-                                  setResult(item.result);
-                                  setTimeout(() => exportAsPDF(), 100);
-                                }}
+                                onClick={() =>
+                                  exportAsPDF(
+                                    item.result,
+                                    item.image,
+                                    item.source,
+                                  )
+                                }
                               >
                                 Export PDF
                               </button>
