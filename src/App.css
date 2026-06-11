@@ -576,7 +576,7 @@ button:disabled {
 }
 
 .history-item {
-  grid-template-columns: 1fr 66px;
+  grid-template-columns: 1fr 76px;
 }
 
 .history-item {
