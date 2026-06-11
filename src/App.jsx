@@ -1096,6 +1096,29 @@ function App() {
                             >
                               Tutup Detail
                             </button>
+                            <div className="export-grid">
+                              <button
+                                className="secondary-btn"
+                                onClick={() => {
+                                  setCapturedImage(item.image);
+                                  setResult(item.result);
+                                  setTimeout(() => exportAsImage(), 100);
+                                }}
+                              >
+                                Simpan Gambar
+                              </button>
+
+                              <button
+                                className="secondary-btn"
+                                onClick={() => {
+                                  setCapturedImage(item.image);
+                                  setResult(item.result);
+                                  setTimeout(() => exportAsPDF(), 100);
+                                }}
+                              >
+                                Export PDF
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>
