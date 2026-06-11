@@ -1006,7 +1006,7 @@ function App() {
                             className="delete-history-item"
                             onClick={() => deleteHistoryItem(item.id)}
                           >
-                            ×
+                            Hapus
                           </button>
                         </div>
 
@@ -1073,6 +1073,12 @@ function App() {
                                 );
                               })}
                             </div>
+                            <button
+                              className="close-detail-btn"
+                              onClick={() => setSelectedHistoryId(null)}
+                            >
+                              Tutup Detail
+                            </button>
                           </div>
                         )}
                       </div>

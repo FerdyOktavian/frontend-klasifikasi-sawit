@@ -611,13 +611,12 @@ button:disabled {
 }
 
 .delete-history-item {
-  width: 36px;
   height: 36px;
-  padding: 0;
+  padding: 0 10px;
   border-radius: 12px;
   color: #b83b2e;
   background: #ffe2dc;
-  font-size: 22px;
+  font-size: 12px;
   font-weight: 900;
 }
 .prob-bar-item {
@@ -1182,4 +1181,36 @@ button:disabled {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.history-detail {
+  color: #24351f;
+}
+
+.history-detail h2,
+.history-detail b,
+.history-detail span,
+.history-detail p,
+.history-detail small {
+  color: #24351f;
+}
+
+.history-detail .result-label {
+  color: #6f604c;
+}
+
+.history-detail .recommendation-box p,
+.history-detail .prob-bar-top span {
+  color: #4d4337;
+}
+
+.close-detail-btn {
+  width: 100%;
+  margin-top: 12px;
+  border: none;
+  border-radius: 16px;
+  padding: 12px;
+  background: #f4ead8;
+  color: #24351f;
+  font-weight: 900;
 }
