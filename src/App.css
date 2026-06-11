@@ -496,33 +496,42 @@ button:disabled {
 }
 
 .history-info {
-  display: grid;
-  gap: 2px;
   min-width: 0;
+  padding-right: 62px;
 }
 
 .history-info b {
+  display: block;
   color: #24351f;
-  font-size: 14px;
+  font-size: 15px;
+  line-height: 1.2;
 }
 
 .history-info span {
+  display: block;
   color: #6f604c;
   font-size: 12px;
+  margin-top: 3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .history-info small {
+  display: block;
   color: #8a7a65;
   font-size: 11px;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .history-confidence {
   color: #2f7d32;
   font-weight: 900;
-  font-size: 13px;
+  font-size: 14px;
+  padding-right: 6px;
 }
 .action-stack {
   display: grid;
@@ -577,41 +586,45 @@ button:disabled {
 }
 
 .history-item {
-  grid-template-columns: 1fr 76px;
-}
-
-.history-item {
-  display: grid;
-  grid-template-columns: 1fr 36px;
-  gap: 8px;
-  align-items: center;
+  position: relative;
   background: #f4ead8;
-  border-radius: 16px;
-  padding: 8px;
+  border-radius: 20px;
+  padding: 10px;
+  overflow: hidden;
 }
 
 .history-main {
-  min-width: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  padding: 0;
+  text-align: left;
 }
 
 .history-main img {
-  width: 58px;
-  height: 58px;
+  width: 64px;
+  height: 64px;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 16px;
   background: #ddd;
 }
 
 .delete-history-item {
-  width: 100%;
-  max-width: 64px;
-  height: 36px;
-  padding: 0;
-  border-radius: 12px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: auto;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
   color: #b83b2e;
   background: #ffe2dc;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
+  box-shadow: none;
 }
 
 .prob-bar-item {

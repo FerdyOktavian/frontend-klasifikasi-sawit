@@ -1021,7 +1021,10 @@ function App() {
 
                           <button
                             className="delete-history-item"
-                            onClick={() => deleteHistoryItem(item.id)}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              deleteHistoryItem(item.id);
+                            }}
                           >
                             Hapus
                           </button>
