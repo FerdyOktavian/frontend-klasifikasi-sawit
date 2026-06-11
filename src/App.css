@@ -478,12 +478,13 @@ button:disabled {
 
 .history-item {
   display: grid;
-  grid-template-columns: 58px 1fr auto;
+  grid-template-columns: 1fr 64px;
+  gap: 8px;
   align-items: center;
-  gap: 10px;
   background: #f4ead8;
   border-radius: 16px;
   padding: 8px;
+  overflow: hidden;
 }
 
 .history-item img {
@@ -590,14 +591,7 @@ button:disabled {
 }
 
 .history-main {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 58px 1fr auto;
-  align-items: center;
-  gap: 10px;
-  background: transparent;
-  padding: 0;
-  text-align: left;
+  min-width: 0;
 }
 
 .history-main img {
@@ -609,15 +603,17 @@ button:disabled {
 }
 
 .delete-history-item {
-  width: 58px;
+  width: 100%;
+  max-width: 64px;
   height: 36px;
-  padding: 0 8px;
+  padding: 0;
   border-radius: 12px;
   color: #b83b2e;
   background: #ffe2dc;
   font-size: 12px;
   font-weight: 900;
 }
+
 .prob-bar-item {
   background: #f4ead8;
   border-radius: 16px;
