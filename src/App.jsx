@@ -223,6 +223,16 @@ function App() {
     stopCamera();
   };
 
+  const retakePhoto = async () => {
+    setCapturedImage(null);
+    setResult(null);
+    setZoom(1);
+
+    if (mode === "camera") {
+      await startCamera();
+    }
+  };
+
   const resetInput = () => {
     stopCamera();
     setCapturedImage(null);
@@ -772,8 +782,8 @@ function App() {
               {mode === "camera" ? (
                 <div className="button-grid">
                   {capturedImage ? (
-                    <button className="secondary-btn" onClick={resetInput}>
-                      Reset
+                    <button className="secondary-btn" onClick={retakePhoto}>
+                      Foto Ulang
                     </button>
                   ) : !cameraActive ? (
                     <button className="secondary-btn" onClick={startCamera}>
@@ -814,7 +824,11 @@ function App() {
                   </button>
                 </div>
               )}
-
+              {mode === "camera" && capturedImage && (
+                <button className="secondary-btn full" onClick={resetInput}>
+                  Reset
+                </button>
+              )}
               {mode === "gallery" && capturedImage && (
                 <button
                   className="primary-btn full"
