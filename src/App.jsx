@@ -5,7 +5,6 @@ const API_URL = "https://ferrdy-klasifikasi-sawit.hf.space/predict";
 const MAX_ZOOM = 5;
 
 function App() {
-  const topRef = useRef(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -17,6 +16,7 @@ function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [selectedHistoryId, setSelectedHistoryId] = useState(null);
 
   const [history, setHistory] = useState(() => {
     try {
@@ -301,17 +301,7 @@ function App() {
 
   const openHistoryItem = (item) => {
     stopCamera();
-    setActiveTab("home");
-    setCapturedImage(item.image);
-    setResult(item.result);
-    setZoom(1);
-
-    setTimeout(() => {
-      topRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 150);
+    setSelectedHistoryId((prevId) => (prevId === item.id ? null : item.id));
   };
 
   const deleteHistoryItem = (id) => {
@@ -322,10 +312,15 @@ function App() {
       "sawitPredictionHistory",
       JSON.stringify(updatedHistory),
     );
+
+    if (selectedHistoryId === id) {
+      setSelectedHistoryId(null);
+    }
   };
 
   const clearHistory = () => {
     setHistory([]);
+    setSelectedHistoryId(null);
     localStorage.removeItem("sawitPredictionHistory");
   };
 
@@ -661,7 +656,7 @@ function App() {
 
   return (
     <div className="app">
-      <main className="phone-shell" ref={topRef}>
+      <main className="phone-shell">
         {activeTab === "home" && (
           <>
             <section className="header">
@@ -944,7 +939,7 @@ function App() {
               <p className="eyebrow">Riwayat Prediksi</p>
               <h1>History</h1>
               <p className="subtitle">
-                Lihat kembali hasil prediksi terakhir yang pernah dilakukan.
+                Klik salah satu riwayat untuk melihat detail hasil prediksi.
               </p>
             </section>
 
@@ -977,35 +972,112 @@ function App() {
                 </div>
 
                 <div className="history-list">
-                  {history.map((item) => (
-                    <div className="history-item" key={item.id}>
-                      <button
-                        className="history-main"
-                        onClick={() => openHistoryItem(item)}
-                      >
-                        <img src={item.image} alt={item.title} />
+                  {history.map((item) => {
+                    const itemInfo = getClassInfo(item.predicted_class);
+                    const itemResult = item.result || {};
+                    const itemConfidence = Number(
+                      itemResult.confidence || item.confidence || 0,
+                    );
+                    const isOpen = selectedHistoryId === item.id;
 
-                        <div className="history-info">
-                          <b>{item.title}</b>
-                          <span>{item.status}</span>
-                          <small>
-                            {item.time} • {item.source || "Input"}
-                          </small>
+                    return (
+                      <div className="history-wrapper" key={item.id}>
+                        <div className="history-item">
+                          <button
+                            className="history-main"
+                            onClick={() => openHistoryItem(item)}
+                          >
+                            <img src={item.image} alt={item.title} />
+
+                            <div className="history-info">
+                              <b>{item.title}</b>
+                              <span>{item.status}</span>
+                              <small>
+                                {item.time} • {item.source || "Input"}
+                              </small>
+                            </div>
+
+                            <div className="history-confidence">
+                              {Number(item.confidence).toFixed(1)}%
+                            </div>
+                          </button>
+
+                          <button
+                            className="delete-history-item"
+                            onClick={() => deleteHistoryItem(item.id)}
+                          >
+                            ×
+                          </button>
                         </div>
 
-                        <div className="history-confidence">
-                          {Number(item.confidence).toFixed(1)}%
-                        </div>
-                      </button>
+                        {isOpen && (
+                          <div
+                            className={`history-detail result-${itemInfo.color}`}
+                          >
+                            <img
+                              src={item.image}
+                              alt={item.title}
+                              className="history-detail-image"
+                            />
 
-                      <button
-                        className="delete-history-item"
-                        onClick={() => deleteHistoryItem(item.id)}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
+                            <div className="result-top">
+                              <div className="result-icon">{itemInfo.icon}</div>
+                              <div>
+                                <p className="result-label">Detail Prediksi</p>
+                                <h2>{itemInfo.title}</h2>
+                              </div>
+                            </div>
+
+                            <div className="status-pill">{itemInfo.status}</div>
+
+                            <div className="confidence-box">
+                              <span>Confidence</span>
+                              <b>{itemConfidence.toFixed(2)}%</b>
+                              <small>
+                                {getConfidenceStatus(itemConfidence)}
+                              </small>
+                            </div>
+
+                            <div className="recommendation-box">
+                              <b>Rekomendasi</b>
+                              <p>{itemInfo.description}</p>
+                            </div>
+
+                            <div className="recommendation-box">
+                              <b>Saran tindakan</b>
+                              <p>{itemInfo.action}</p>
+                            </div>
+
+                            <div className="prob-list">
+                              {Object.entries(
+                                itemResult.probabilities || {},
+                              ).map(([label, value]) => {
+                                const percent = Number(value);
+
+                                return (
+                                  <div className="prob-bar-item" key={label}>
+                                    <div className="prob-bar-top">
+                                      <span>{getClassInfo(label).title}</span>
+                                      <b>{percent.toFixed(2)}%</b>
+                                    </div>
+
+                                    <div className="prob-track">
+                                      <div
+                                        className="prob-fill"
+                                        style={{
+                                          width: `${Math.min(percent, 100)}%`,
+                                        }}
+                                      ></div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </section>
             ) : (
@@ -1131,10 +1203,7 @@ function App() {
 
                 <div>
                   <span>02</span>
-                  <p>
-                    Memberikan hasil prediksi berupa label dan tingkat
-                    confidence.
-                  </p>
+                  <p>Memberikan hasil prediksi berupa label dan confidence.</p>
                 </div>
 
                 <div>
@@ -1157,6 +1226,8 @@ function App() {
             </section>
           </>
         )}
+
+        <div className="bottom-nav-spacer"></div>
 
         <nav className="bottom-nav">
           <button
