@@ -497,7 +497,7 @@ button:disabled {
 
 .history-info {
   min-width: 0;
-  padding-right: 62px;
+  padding-right: 0px;
 }
 
 .history-info b {
@@ -528,11 +528,14 @@ button:disabled {
 }
 
 .history-confidence {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
   color: #2f7d32;
   font-weight: 900;
   font-size: 14px;
-  padding-right: 6px;
 }
+
 .action-stack {
   display: grid;
   gap: 10px;
@@ -596,11 +599,11 @@ button:disabled {
 .history-main {
   width: 100%;
   display: grid;
-  grid-template-columns: 64px 1fr auto;
+  grid-template-columns: 64px 1fr;
   align-items: center;
   gap: 12px;
   background: transparent;
-  padding: 0;
+  padding: 0 0 38px;
   text-align: left;
 }
 
@@ -614,17 +617,16 @@ button:disabled {
 
 .delete-history-item {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  left: 86px;
+  bottom: 10px;
   width: auto;
   height: 30px;
-  padding: 0 10px;
+  padding: 0 12px;
   border-radius: 999px;
   color: #b83b2e;
   background: #ffe2dc;
   font-size: 11px;
   font-weight: 900;
-  box-shadow: none;
 }
 
 .prob-bar-item {
