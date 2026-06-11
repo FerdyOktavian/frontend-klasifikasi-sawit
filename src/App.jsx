@@ -223,14 +223,12 @@ function App() {
     stopCamera();
   };
 
-  const retakePhoto = async () => {
+  const resetInput = () => {
+    stopCamera();
     setCapturedImage(null);
     setResult(null);
+    setLoading(false);
     setZoom(1);
-
-    if (mode === "camera") {
-      await startCamera();
-    }
   };
 
   const handleGalleryImage = (event) => {
@@ -349,7 +347,12 @@ function App() {
 
       const data = await response.json();
       setResult(data);
-      saveToHistory(data, capturedImage);
+
+      try {
+        saveToHistory(data, capturedImage);
+      } catch (historyError) {
+        console.warn("History gagal disimpan:", historyError);
+      }
     } catch (error) {
       console.error(error);
       alert("Gagal prediksi. Pastikan backend FastAPI masih aktif.");
@@ -769,8 +772,8 @@ function App() {
               {mode === "camera" ? (
                 <div className="button-grid">
                   {capturedImage ? (
-                    <button className="secondary-btn" onClick={retakePhoto}>
-                      Foto Ulang
+                    <button className="secondary-btn" onClick={resetInput}>
+                      Reset
                     </button>
                   ) : !cameraActive ? (
                     <button className="secondary-btn" onClick={startCamera}>
@@ -802,12 +805,12 @@ function App() {
                 </div>
               ) : (
                 <div className="button-grid">
-                  <button className="secondary-btn" onClick={openGallery}>
-                    Pilih Galeri
+                  <button className="secondary-btn" onClick={resetInput}>
+                    Reset
                   </button>
 
                   <button className="primary-btn" onClick={openGallery}>
-                    {capturedImage ? "Ganti Foto" : "Upload Foto"}
+                    {capturedImage ? "Ganti Foto" : "Pilih Foto"}
                   </button>
                 </div>
               )}

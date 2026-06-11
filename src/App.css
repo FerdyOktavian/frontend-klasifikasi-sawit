@@ -1214,3 +1214,17 @@ button:disabled {
   color: #24351f;
   font-weight: 900;
 }
+
+.history-detail .result-top h2 {
+  color: #24351f !important;
+}
+
+.history-detail .result-top .result-label {
+  color: #6f604c !important;
+}
+
+.history-detail .confidence-box b,
+.history-detail .confidence-box span,
+.history-detail .confidence-box small {
+  color: #24351f !important;
+}
