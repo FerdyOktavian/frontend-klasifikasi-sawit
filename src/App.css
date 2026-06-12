@@ -1476,3 +1476,8 @@ button:disabled {
 .dark-theme .low-confidence-card b {
   color: #ffd18a !important;
 }
+.dark-theme .developer-tags span {
+  background: #2f7d32 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
