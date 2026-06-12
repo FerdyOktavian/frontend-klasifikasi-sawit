@@ -734,11 +734,6 @@ function App() {
   return (
     <div className={`app ${theme === "dark" ? "dark-theme" : "light-theme"}`}>
       <main className="phone-shell">
-        <button className="theme-toggle" onClick={toggleTheme}>
-          <span>{theme === "dark" ? "☀️" : "🌙"}</span>
-          {theme === "dark" ? "Light" : "Dark"}
-        </button>
-
         {activeTab === "home" && (
           <>
             <section className="header">
@@ -747,6 +742,11 @@ function App() {
               <p className="subtitle">
                 Gunakan kamera atau galeri untuk prediksi kematangan buah sawit.
               </p>
+
+              <button className="theme-toggle" onClick={toggleTheme}>
+                {theme === "dark" ? "☀️" : "🌙"}
+              </button>
+              
             </section>
 
             <section className="mode-switch">
