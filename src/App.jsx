@@ -17,6 +17,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [selectedHistoryId, setSelectedHistoryId] = useState(null);
+  const [lowConfidence, setLowConfidence] = useState(null);
 
   const [history, setHistory] = useState(() => {
     try {
@@ -128,6 +129,7 @@ function App() {
     setMode(selectedMode);
     setCapturedImage(null);
     setResult(null);
+    setLowConfidence(null);
     setZoom(1);
   };
 
@@ -136,6 +138,7 @@ function App() {
       setCapturedImage(null);
       setResult(null);
       setZoom(1);
+      setLowConfidence(null);
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
@@ -219,6 +222,7 @@ function App() {
     const imageData = canvas.toDataURL("image/jpeg", 0.95);
     setCapturedImage(imageData);
     setResult(null);
+    setLowConfidence(null);
 
     stopCamera();
   };
@@ -226,6 +230,7 @@ function App() {
   const retakePhoto = async () => {
     setCapturedImage(null);
     setResult(null);
+    setLowConfidence(null);
     setZoom(1);
 
     if (mode === "camera") {
@@ -237,6 +242,7 @@ function App() {
     stopCamera();
     setCapturedImage(null);
     setResult(null);
+    setLowConfidence(null);
     setLoading(false);
     setZoom(1);
   };
@@ -256,6 +262,7 @@ function App() {
     reader.onload = () => {
       setCapturedImage(reader.result);
       setResult(null);
+      setLowConfidence(null);
       stopCamera();
     };
 
@@ -340,6 +347,7 @@ function App() {
 
     setLoading(true);
     setResult(null);
+    setLowConfidence(null);
 
     const file = dataURLtoFile(capturedImage, "sawit-image.jpg");
     const formData = new FormData();
@@ -358,13 +366,17 @@ function App() {
       const data = await response.json();
       const confidenceValue = Number(data.confidence);
 
-      if (confidenceValue < 75) {
-        alert(
-          "Confidence masih kurang. Tolong ambil ulang gambar dengan cahaya lebih terang dan objek lebih jelas.",
-        );
+      if (confidenceValue < 70) {
         setResult(null);
+        setLowConfidence({
+          confidence: confidenceValue,
+          message:
+            "Confidence rendah. Coba ulang foto dengan cahaya lebih terang, objek lebih jelas, jarak tidak terlalu jauh, dan buah berada di tengah frame.",
+        });
         return;
       }
+
+      setLowConfidence(null);
       setResult(data);
 
       try {
@@ -887,6 +899,18 @@ function App() {
               </section>
             )}
 
+            {lowConfidence && (
+              <section className="low-confidence-card">
+                <div className="low-confidence-icon">⚠️</div>
+                <div>
+                  <p className="result-label">Prediksi belum ditampilkan</p>
+                  <h2>Confidence Rendah</h2>
+                  <b>{lowConfidence.confidence.toFixed(2)}%</b>
+                  <p>{lowConfidence.message}</p>
+                </div>
+              </section>
+            )}
+
             {result && classInfo && (
               <section className={`result-card result-${classInfo.color}`}>
                 <div className="result-top">
@@ -909,16 +933,6 @@ function App() {
                   <span>📅 {new Date().toLocaleDateString("id-ID")}</span>
                   <span>📷 {mode === "camera" ? "Kamera" : "Galeri"}</span>
                 </div>
-
-                {confidence < 75 && (
-                  <div className="warning-box">
-                    <b>⚠️ Hasil perlu dicek ulang</b>
-                    <p>
-                      Confidence masih rendah. Coba foto ulang dengan cahaya
-                      lebih terang, jarak lebih dekat, dan objek lebih jelas.
-                    </p>
-                  </div>
-                )}
 
                 <div className="recommendation-box">
                   <b>Rekomendasi</b>
