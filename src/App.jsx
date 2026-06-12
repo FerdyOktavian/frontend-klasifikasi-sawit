@@ -10,6 +10,13 @@ function App() {
   const fileInputRef = useRef(null);
 
   const [activeTab, setActiveTab] = useState("home");
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem("sawitTheme") || "light";
+    } catch  {
+      return "light";
+    }
+  });
   const [mode, setMode] = useState("camera");
   const [cameraActive, setCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -29,6 +36,20 @@ function App() {
       return [];
     }
   });
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => {
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+
+      try {
+        localStorage.setItem("sawitTheme", nextTheme);
+      } catch (error) {
+        console.warn("Tema gagal disimpan:", error);
+      }
+
+      return nextTheme;
+    });
+  };
 
   const getClassInfo = (className) => {
     const info = {
@@ -366,7 +387,7 @@ function App() {
       const data = await response.json();
       const confidenceValue = Number(data.confidence);
 
-      if (confidenceValue < 70) {
+      if (confidenceValue < 75) {
         setResult(null);
         setLowConfidence({
           confidence: confidenceValue,
@@ -711,8 +732,13 @@ function App() {
   const confidence = result ? Number(result.confidence) : 0;
 
   return (
-    <div className="app">
+    <div className={`app ${theme === "dark" ? "dark-theme" : "light-theme"}`}>
       <main className="phone-shell">
+        <button className="theme-toggle" onClick={toggleTheme}>
+          <span>{theme === "dark" ? "☀️" : "🌙"}</span>
+          {theme === "dark" ? "Light" : "Dark"}
+        </button>
+
         {activeTab === "home" && (
           <>
             <section className="header">
