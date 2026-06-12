@@ -356,6 +356,15 @@ function App() {
       }
 
       const data = await response.json();
+      const confidenceValue = Number(data.confidence);
+
+      if (confidenceValue < 75) {
+        alert(
+          "Confidence masih kurang. Tolong ambil ulang gambar dengan cahaya lebih terang dan objek lebih jelas.",
+        );
+        setResult(null);
+        return;
+      }
       setResult(data);
 
       try {
@@ -957,15 +966,6 @@ function App() {
                       );
                     },
                   )}
-                </div>
-
-                <div className="export-grid">
-                  <button className="secondary-btn" onClick={exportAsImage}>
-                    Simpan Gambar
-                  </button>
-                  <button className="secondary-btn" onClick={exportAsPDF}>
-                    Export PDF
-                  </button>
                 </div>
               </section>
             )}
