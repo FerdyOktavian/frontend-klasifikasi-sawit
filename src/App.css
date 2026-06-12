@@ -1285,21 +1285,25 @@ button:disabled {
    TEMA HITAMMMMMMMMMMMMMMMMMM
    ========================= */
 .title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  position: relative;
+  text-align: center;
 }
+
 .title-row h1 {
   margin: 0;
-  flex: 1;
 }
+
 .header-row > div {
   flex: 1;
   min-width: 0;
 }
 
 .theme-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
   width: 42px;
   height: 42px;
   flex: 0 0 42px;
