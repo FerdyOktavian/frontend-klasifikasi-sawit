@@ -738,15 +738,18 @@ function App() {
           <>
             <section className="header">
               <p className="eyebrow">EfficientNetV2S</p>
-              <h1>Klasifikasi Sawit</h1>
+
+              <div className="title-row">
+                <h1>Klasifikasi Sawit</h1>
+
+                <button className="theme-toggle" onClick={toggleTheme}>
+                  {theme === "dark" ? "☀️" : "🌙"}
+                </button>
+              </div>
+
               <p className="subtitle">
                 Gunakan kamera atau galeri untuk prediksi kematangan buah sawit.
               </p>
-
-              <button className="theme-toggle" onClick={toggleTheme}>
-                {theme === "dark" ? "☀️" : "🌙"}
-              </button>
-              
             </section>
 
             <section className="mode-switch">

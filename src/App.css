@@ -1284,23 +1284,22 @@ button:disabled {
 /* =========================
    TEMA HITAMMMMMMMMMMMMMMMMMM
    ========================= */
-.header-row {
+.title-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
-
-.header-row > div {
+.title-row h1 {
+  margin: 0;
   flex: 1;
-  min-width: 0;
 }
 
 .theme-toggle {
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
-  border-radius: 16px;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 15px;
   padding: 0;
   display: grid;
   place-items: center;
@@ -1308,7 +1307,7 @@ button:disabled {
   color: #24351f;
   border: 1px solid rgba(117, 91, 50, 0.16);
   box-shadow: 0 10px 22px rgba(91, 64, 28, 0.12);
-  font-size: 20px;
+  font-size: 19px;
 }
 
 .dark-theme {
