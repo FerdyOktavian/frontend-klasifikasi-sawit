@@ -1294,6 +1294,10 @@ button:disabled {
   margin: 0;
   flex: 1;
 }
+.header-row > div {
+  flex: 1;
+  min-width: 0;
+}
 
 .theme-toggle {
   width: 42px;
