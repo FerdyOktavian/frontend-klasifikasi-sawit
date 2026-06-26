@@ -20,6 +20,7 @@ function App() {
   const [mode, setMode] = useState("camera");
   const [cameraActive, setCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(1);
@@ -149,6 +150,7 @@ function App() {
     stopCamera();
     setMode(selectedMode);
     setCapturedImage(null);
+    setSelectedFile(null);
     setResult(null);
     setLowConfidence(null);
     setZoom(1);
@@ -157,6 +159,7 @@ function App() {
   const startCamera = async () => {
     try {
       setCapturedImage(null);
+      setSelectedFile(null);
       setResult(null);
       setZoom(1);
       setLowConfidence(null);
@@ -242,6 +245,7 @@ function App() {
 
     const imageData = canvas.toDataURL("image/jpeg", 0.95);
     setCapturedImage(imageData);
+    setSelectedFile(null);
     setResult(null);
     setLowConfidence(null);
 
@@ -262,6 +266,7 @@ function App() {
   const resetInput = () => {
     stopCamera();
     setCapturedImage(null);
+    setSelectedFile(null);
     setResult(null);
     setLowConfidence(null);
     setLoading(false);
@@ -277,6 +282,8 @@ function App() {
       alert("File harus berupa gambar.");
       return;
     }
+
+    setSelectedFile(file);
 
     const reader = new FileReader();
 
@@ -370,7 +377,11 @@ function App() {
     setResult(null);
     setLowConfidence(null);
 
-    const file = dataURLtoFile(capturedImage, "sawit-image.jpg");
+    const file =
+      mode === "gallery" && selectedFile
+        ? selectedFile
+        : dataURLtoFile(capturedImage, "sawit-image.jpg");
+
     const formData = new FormData();
     formData.append("file", file);
 
